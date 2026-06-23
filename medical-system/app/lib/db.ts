@@ -1,18 +1,18 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error('لطفاً متغیر MONGODB_URI را در فایل env تعریف کنید.');
+  throw new Error("لطفاً MONGODB_URI را در .env.local تعریف کنید.");
 }
 
-/**
- * ایجاد یک کش سراسری برای جلوگیری از ساخت کانکشن‌های متعدد در توسعه (Development)
- */
 let cached = (global as any).mongoose;
 
 if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+  cached = (global as any).mongoose = {
+    conn: null,
+    promise: null,
+  };
 }
 
 async function connectDB() {
@@ -21,23 +21,21 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
+    cached.promise = mongoose
+      .connect(MONGODB_URI!)
+      .then((mongooseInstance) => {
+        console.log("=================================");
+        console.log(
+          "Database:",
+          mongooseInstance.connection.db?.databaseName
+        );
+        console.log("=================================");
 
-    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongooseInstance) => {
-      console.log('✅ اتصال به دیتابیس MongoDB با موفقیت برقرار شد.');
-      return mongooseInstance;
-    });
+        return mongooseInstance;
+      });
   }
 
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    console.error('❌ خطا در اتصال به دیتابیس:', e);
-    throw e;
-  }
+  cached.conn = await cached.promise;
 
   return cached.conn;
 }

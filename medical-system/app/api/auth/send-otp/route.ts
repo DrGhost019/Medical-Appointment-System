@@ -3,10 +3,16 @@ import connectDB from '../../../lib/db';
 import Otp from '../../../models/Otp';
 import { sendOtpSms } from '../../../lib/sms';
 
+import mongoose from "mongoose";
+
+
 export async function POST(request: Request) {
   try {
     // ۱. اتصال به دیتابیس
     await connectDB();
+
+    console.log("ReadyState =", mongoose.connection.readyState);
+    console.log("Database =", mongoose.connection.db?.databaseName);
 
     // ۲. دریافت شماره موبایل از فرانت‌اَند
     const { phone } = await request.json();
