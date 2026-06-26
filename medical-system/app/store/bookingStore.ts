@@ -1,6 +1,20 @@
 import { create } from 'zustand';
 
-interface Slot {
+// ۱. اضافه کردن تمام فیلدهای مورد نیاز کامپوننت‌ها به تایپ داکتر
+interface DoctorInfo {
+  _id: string;
+  name: string;
+  specialty: string;
+  avatar?: string;
+  image?: string;
+  medicalCode?: string;
+  rating?: number;
+  reviewCount?: number;
+  address?: string;
+  firstAvailable?: string;
+}
+
+interface TimeSlot {
   _id: string;
   doctorId: string;
   date: string;
@@ -8,31 +22,41 @@ interface Slot {
   isReserved: boolean;
 }
 
-interface Doctor {
-  _id: string;
+interface PatientInfo {
   name: string;
-  specialty: string;
-  avatar?: string;
+  phone: string;
+  nationalId?: string;
 }
 
 interface BookingState {
-  selectedDoctor: Doctor | null;
+  selectedDoctor: DoctorInfo | null;
   selectedDate: string | null;
-  selectedSlot: Slot | null;
-  setSelectedDoctor: (doctor: Doctor | null) => void;
-  setSelectedDate: (date: string | null) => void;
-  setSelectedSlot: (slot: Slot | null) => void;
+  selectedSlot: TimeSlot | null;
+  patientInfo: PatientInfo | null;
+  // متدها (Actions)
+  setSelectedDoctor: (doctor: DoctorInfo) => void;
+  setSelectedDate: (date: string) => void;
+  setSelectedSlot: (slot: TimeSlot) => void;
+  setPatientInfo: (patient: PatientInfo) => void;
   clearBooking: () => void;
 }
 
+// ۲. ساخت استور با پشتیبانی از فیلدهای جدید
 export const useBookingStore = create<BookingState>((set) => ({
   selectedDoctor: null,
   selectedDate: null,
   selectedSlot: null,
-  
-  setSelectedDoctor: (doctor) => set({ selectedDoctor: doctor, selectedDate: null, selectedSlot: null }),
-  setSelectedDate: (date) => set({ selectedDate: date, selectedSlot: null }),
+  patientInfo: null,
+
+  setSelectedDoctor: (doctor) => set({ selectedDoctor: doctor }),
+  setSelectedDate: (date) => set({ selectedDate: date }),
   setSelectedSlot: (slot) => set({ selectedSlot: slot }),
+  setPatientInfo: (patient) => set({ patientInfo: patient }),
   
-  clearBooking: () => set({ selectedDoctor: null, selectedDate: null, selectedSlot: null }),
+  clearBooking: () => set({
+    selectedDoctor: null,
+    selectedDate: null,
+    selectedSlot: null,
+    patientInfo: null,
+  }),
 }));
