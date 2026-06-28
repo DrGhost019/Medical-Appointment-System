@@ -1,4 +1,4 @@
-import { Specialty } from '@/types/doctor';
+import { Specialty } from '../types/doctor';
 
 export const specialties: Specialty[] = [
   { id: '1', name: 'قلب و عروق', icon: 'heart', doctorCount: 145 },

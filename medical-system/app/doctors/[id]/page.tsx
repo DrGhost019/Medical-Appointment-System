@@ -1,14 +1,14 @@
 // src/app/doctors/[id]/page.tsx
 import React from 'react';
 import { notFound } from 'next/navigation';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import DoctorBackLink from '@/components/doctor/DoctorBackLink';
-import DoctorInfo from '@/components/doctor/DoctorInfo';
-import BookingCalendar from '@/components/doctor/BookingCalendar';
-import ContactMethods from '@/components/doctor/ContactMethods';
-import ReviewsSection from '@/components/doctor/ReviewsSection';
-import { getDoctorById, getReviewsByDoctorId } from '@/data/doctorDetails';
+import Header from '../../components/layout/Header';
+import Footer from '../../components/layout/Footer';
+import DoctorBackLink from '../../components/doctor/DoctorBackLink';
+import DoctorInfo from '../../components/doctor/DoctorInfo';
+import BookingCalendar from '../../components/doctor/BookingCalendar';
+import ContactMethods from '../../components/doctor/ContactMethods';
+import ReviewsSection from '../../components/doctor/ReviewsSection';
+import { getDoctorById, getReviewsByDoctorId } from '../../data/doctorDetails';
 
 // ✅ تابع async شد
 export default async function DoctorPage({ params }: { params: Promise<{ id: string }> }) {

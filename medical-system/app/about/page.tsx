@@ -1,13 +1,13 @@
 // src/app/about/page.tsx
 import React from 'react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import AboutDoctor from '@/components/about/AboutDoctor';
-import WhyDoctorRozro from '@/components/about/WhyDoctorRozro';
-import ContactInfo from '@/components/about/ContactInfo';
-import TechForHealth from '@/components/about/TechForHealth';
-import Achievements from '@/components/about/Achievements';
-import OurTeam from '@/components/about/OurTeam';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
+import AboutDoctor from '../components/about/AboutDoctor';
+import WhyDoctorRozro from '../components/about/WhyDoctorRozro';
+import ContactInfo from '../components/about/ContactInfo';
+import TechForHealth from '../components/about/TechForHealth';
+import Achievements from '../components/about/Achievements';
+import OurTeam from '../components/about/OurTeam';
 
 export default function AboutPage() {
   return (

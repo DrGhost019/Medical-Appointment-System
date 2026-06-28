@@ -1,12 +1,13 @@
-// src/app/search/page.tsx
 "use client";
 
 import React, { useState } from 'react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import SearchHero from '@/components/search/SearchHero';
-import FilterSidebar from '@/components/search/FilterSidebar';
-import DoctorList from '@/components/search/DoctorList';
+
+// 👈 اصلاح مسیرهای ایمپورت بر اساس ساختار واقعی پروژه برای حل ارور کامپایل
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
+import SearchHero from '../components/search/SearchHero';
+import FilterSidebar from '../components/search/FilterSidebar';
+import DoctorList from '../components/search/DoctorList';
 
 export interface FilterState {
   searchQuery: string;
@@ -43,6 +44,12 @@ export default function SearchPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // تابع کمکی برای آپدیت فیلد متنی جستجوی بالای صفحه (از طرف SearchHero)
+  const handleSearchChange = (query: string) => {
+    setFilters(prev => ({ ...prev, searchQuery: query }));
+    setCurrentPage(1);
+  };
+
   const handleApplyFilters = (newFilters: FilterState) => {
     setFilters(newFilters);
     setCurrentPage(1); // بازگشت به صفحه اول بعد از اعمال فیلتر
@@ -69,10 +76,14 @@ export default function SearchPage() {
     <main className="min-h-screen bg-white">
       <Header />
       
-      <SearchHero />
+      {/* 👈 اضافه کردن مقادیر برای مانیتور کردن و تغییر متن جستجو */}
+      <SearchHero 
+        searchQuery={filters.searchQuery} 
+        onSearchChange={handleSearchChange} 
+      />
       
-      <div className="max-w-[1440px] mx-auto py-8 px-[110px]">
-        <div className="flex gap-6">
+      <div className="max-w-[1440px] mx-auto py-8 px-4 md:px-[110px]">
+        <div className="flex flex-col lg:flex-row gap-6">
           
           <FilterSidebar 
             filters={filters}

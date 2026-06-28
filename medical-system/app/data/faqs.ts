@@ -1,4 +1,4 @@
-import { FAQ } from '@/types/doctor';
+import { FAQ } from '../types/doctor';
 
 export const faqs: FAQ[] = [
   {

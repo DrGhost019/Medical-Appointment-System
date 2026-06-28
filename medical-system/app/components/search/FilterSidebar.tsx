@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, X, Check, ChevronDown, ChevronUp } from 'lucide-react';
 
-// آرس کامل و نسبی به صفحه سرچ برای خواندن تایپ FilterState
+// آدرس کامل و نسبی به صفحه سرچ برای خواندن تایپ FilterState
 import { FilterState } from '../../search/page';
 
 interface FilterSidebarProps {
@@ -62,7 +62,6 @@ const FilterSidebar = ({ filters, onApplyFilters, onClearFilters }: FilterSideba
   const toggleCity = (city: string) => {
     setLocalFilters((prev: FilterState) => ({
       ...prev,
-      // 👈 اضافه شدن تایپ string به متغیر c در متد filter
       cities: prev.cities.includes(city)
         ? prev.cities.filter((c: string) => c !== city)
         : [...prev.cities, city],
@@ -72,7 +71,6 @@ const FilterSidebar = ({ filters, onApplyFilters, onClearFilters }: FilterSideba
   const toggleGender = (gender: string) => {
     setLocalFilters((prev: FilterState) => ({
       ...prev,
-      // 👈 اضافه شدن تایپ string به متغیر g در متد filter
       gender: prev.gender.includes(gender)
         ? prev.gender.filter((g: string) => g !== gender)
         : [...prev.gender, gender],
@@ -84,7 +82,6 @@ const FilterSidebar = ({ filters, onApplyFilters, onClearFilters }: FilterSideba
       setExpandedProvince('');
     } else {
       setExpandedProvince(province);
-      // اضافه شدن تایپ FilterState برای حل ارور implicit any
       setLocalFilters((prev: FilterState) => ({
         ...prev,
         selectedProvince: province,
@@ -304,74 +301,47 @@ const FilterSidebar = ({ filters, onApplyFilters, onClearFilters }: FilterSideba
             وضعیت مورد نظر خود را انتخاب کنید
           </p>
           <div className="flex flex-col gap-3">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div
-                className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                  localFilters.hasEmptySlot
-                    ? 'bg-[#4179F0] border-[#4179F0]'
-                    : 'border-[#CCCCCC] bg-white'
-                }`}
-                onClick={() =>
-                  setLocalFilters((prev: FilterState) => ({
-                    ...prev,
-                    hasEmptySlot: !prev.hasEmptySlot,
-                  }))
-                }
-              >
+            <label 
+              onClick={() => setLocalFilters((prev) => ({ ...prev, hasEmptySlot: !prev.hasEmptySlot }))}
+              className="flex items-center gap-2 cursor-pointer select-none"
+            >
+              <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${localFilters.hasEmptySlot ? 'bg-[#4179F0] border-[#4179F0]' : 'border-[#CCCCCC] bg-white'}`}>
                 {localFilters.hasEmptySlot && <Check size={10} className="text-white" />}
               </div>
               <span className="font-vazirmatn font-normal text-xs text-[#2E2E2E]">
                 پزشکان دارای نوبت خالی
               </span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div
-                className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                  localFilters.canVisit
-                    ? 'bg-[#4179F0] border-[#4179F0]'
-                    : 'border-[#CCCCCC] bg-white'
-                }`}
-                onClick={() =>
-                  setLocalFilters((prev: FilterState) => ({ ...prev, canVisit: !prev.canVisit }))
-                }
-              >
+            
+            <label 
+              onClick={() => setLocalFilters((prev) => ({ ...prev, canVisit: !prev.canVisit }))}
+              className="flex items-center gap-2 cursor-pointer select-none"
+            >
+              <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${localFilters.canVisit ? 'bg-[#4179F0] border-[#4179F0]' : 'border-[#CCCCCC] bg-white'}`}>
                 {localFilters.canVisit && <Check size={10} className="text-white" />}
               </div>
               <span className="font-vazirmatn font-normal text-xs text-[#2E2E2E]">
                 امکان ویزیت
               </span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div
-                className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                  localFilters.isOnline
-                    ? 'bg-[#4179F0] border-[#4179F0]'
-                    : 'border-[#CCCCCC] bg-white'
-                }`}
-                onClick={() =>
-                  setLocalFilters((prev: FilterState) => ({ ...prev, isOnline: !prev.isOnline }))
-                }
-              >
+            
+            <label 
+              onClick={() => setLocalFilters((prev) => ({ ...prev, isOnline: !prev.isOnline }))}
+              className="flex items-center gap-2 cursor-pointer select-none"
+            >
+              <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${localFilters.isOnline ? 'bg-[#4179F0] border-[#4179F0]' : 'border-[#CCCCCC] bg-white'}`}>
                 {localFilters.isOnline && <Check size={10} className="text-white" />}
               </div>
               <span className="font-vazirmatn font-normal text-xs text-[#2E2E2E]">
                 آنلاین
               </span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div
-                className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                  localFilters.canInPerson
-                    ? 'bg-[#4179F0] border-[#4179F0]'
-                    : 'border-[#CCCCCC] bg-white'
-                }`}
-                onClick={() =>
-                  setLocalFilters((prev: FilterState) => ({
-                    ...prev,
-                    canInPerson: !prev.canInPerson,
-                  }))
-                }
-              >
+            
+            <label 
+              onClick={() => setLocalFilters((prev) => ({ ...prev, canInPerson: !prev.canInPerson }))}
+              className="flex items-center gap-2 cursor-pointer select-none"
+            >
+              <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${localFilters.canInPerson ? 'bg-[#4179F0] border-[#4179F0]' : 'border-[#CCCCCC] bg-white'}`}>
                 {localFilters.canInPerson && <Check size={10} className="text-white" />}
               </div>
               <span className="font-vazirmatn font-normal text-xs text-[#2E2E2E]">
@@ -411,15 +381,12 @@ const FilterSidebar = ({ filters, onApplyFilters, onClearFilters }: FilterSideba
                   <div className="flex flex-col gap-2 mt-2 pr-4">
                     {getCurrentCities().length > 0 ? (
                       getCurrentCities().map((city) => (
-                        <label key={city} className="flex items-center gap-2 cursor-pointer">
-                          <div
-                            className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                              localFilters.cities.includes(city)
-                                ? 'bg-[#4179F0] border-[#4179F0]'
-                                : 'border-[#CCCCCC] bg-white'
-                            }`}
-                            onClick={() => toggleCity(city)}
-                          >
+                        <label 
+                          key={city} 
+                          onClick={() => toggleCity(city)}
+                          className="flex items-center gap-2 cursor-pointer select-none"
+                        >
+                          <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${localFilters.cities.includes(city) ? 'bg-[#4179F0] border-[#4179F0]' : 'border-[#CCCCCC] bg-white'}`}>
                             {localFilters.cities.includes(city) && (
                               <Check size={10} className="text-white" />
                             )}
@@ -452,15 +419,11 @@ const FilterSidebar = ({ filters, onApplyFilters, onClearFilters }: FilterSideba
             جنسیت پزشک
           </span>
           <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div
-                className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                  localFilters.gender.includes('male')
-                    ? 'bg-[#4179F0] border-[#4179F0]'
-                    : 'border-[#CCCCCC] bg-white'
-                }`}
-                onClick={() => toggleGender('male')}
-              >
+            <label 
+              onClick={() => toggleGender('male')}
+              className="flex items-center gap-2 cursor-pointer select-none"
+            >
+              <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${localFilters.gender.includes('male') ? 'bg-[#4179F0] border-[#4179F0]' : 'border-[#CCCCCC] bg-white'}`}>
                 {localFilters.gender.includes('male') && (
                   <Check size={10} className="text-white" />
                 )}
@@ -469,15 +432,12 @@ const FilterSidebar = ({ filters, onApplyFilters, onClearFilters }: FilterSideba
                 آقا
               </span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div
-                className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                  localFilters.gender.includes('female')
-                    ? 'bg-[#4179F0] border-[#4179F0]'
-                    : 'border-[#CCCCCC] bg-white'
-                }`}
-                onClick={() => toggleGender('female')}
-              >
+            
+            <label 
+              onClick={() => toggleGender('female')}
+              className="flex items-center gap-2 cursor-pointer select-none"
+            >
+              <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${localFilters.gender.includes('female') ? 'bg-[#4179F0] border-[#4179F0]' : 'border-[#CCCCCC] bg-white'}`}>
                 {localFilters.gender.includes('female') && (
                   <Check size={10} className="text-white" />
                 )}
@@ -497,7 +457,7 @@ const FilterSidebar = ({ filters, onApplyFilters, onClearFilters }: FilterSideba
           onClick={handleApply}
           className="w-full h-[42px] rounded-lg bg-[#4179F0] text-white font-vazirmatn font-medium text-sm hover:bg-[#3565d0] transition-colors mt-4 cursor-pointer"
         >
-          اعمال فیلترها
+           اعمال فیلترها
         </button>
       </div>
     </div>

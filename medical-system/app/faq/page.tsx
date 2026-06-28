@@ -1,9 +1,9 @@
 // src/app/faq/page.tsx
 import React from 'react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import FAQBackLink from '@/components/faq/FAQBackLink';
-import FAQList from '@/components/faq/FAQList';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
+import FAQBackLink from '../components/faq/FAQBackLink';
+import FAQList from '../components/faq/FAQList';
 
 export default function FAQPage() {
   return (

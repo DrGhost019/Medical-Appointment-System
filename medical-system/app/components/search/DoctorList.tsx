@@ -19,6 +19,10 @@ interface FilterState {
   canVisit: boolean;
   isOnline: boolean;
   canInPerson: boolean;
+  // 👈 اضافه شدن فیلترهای جاافتاده به تایپ سایدبار برای همگام‌سازی کامل
+  insurance?: string;
+  experience?: string;
+  gender?: string[];
 }
 
 interface DoctorListProps {
@@ -37,9 +41,11 @@ const DoctorList = ({ currentPage, onPageChange, filters }: DoctorListProps) => 
     { id: 'nearestAvailable' as SortOption, label: 'نزدیک‌ترین نوبت آزاد' },
   ];
 
-  // اعمال فیلترها - تعریف تایپ دقیق به جای any
+  // اعمال فیلترها به صورت زنده و داینامیک
+  // اعمال فیلترها به صورت منعطف و امن
   const filteredDoctors = useMemo(() => {
     return allDoctors.filter((doctor: DoctorDetail) => {
+      // ۱. فیلتر متنی هیرو و سایدبار
       if (filters.searchQuery) {
         const query = filters.searchQuery.toLowerCase();
         const matchesName = doctor.name?.toLowerCase().includes(query);
@@ -47,10 +53,12 @@ const DoctorList = ({ currentPage, onPageChange, filters }: DoctorListProps) => 
         if (!matchesName && !matchesSpecialty) return false;
       }
 
+      // ۲. فیلتر تخصص
       if (filters.specialty && doctor.specialty !== filters.specialty) {
         return false;
       }
 
+      // ۳. فیلتر شهرها
       if (filters.cities && filters.cities.length > 0) {
         const addressMatches = filters.cities.some((city) =>
           doctor.address?.includes(city)
@@ -58,7 +66,37 @@ const DoctorList = ({ currentPage, onPageChange, filters }: DoctorListProps) => 
         if (!addressMatches) return false;
       }
 
-      // استفاده از ویژگی‌های موجود یا آپشنال اختیاری برای جلوگیری از خطای ران‌تایم
+      // ۴. فیلتر جنسیت (با لایه امنیتی در صورت نبودن فیلد در دیتا)
+      if (filters.gender && filters.gender.length > 0) {
+        const docGender = (doctor as any).gender || (doctor as any).sex;
+        // اگر پزشک اصلاً جنسیتش مشخص نبود، برای خراب نشدن سرچ حذفش نکن
+        if (docGender && !filters.gender.includes(docGender.toLowerCase())) {
+          return false;
+        }
+      }
+
+      // ۵. فیلتر بیمه طرف قرارداد
+      if (filters.insurance) {
+        const insurances = (doctor as any).insurances || (doctor as any).insurance || [];
+        if (Array.isArray(insurances)) {
+          if (!insurances.includes(filters.insurance)) return false;
+        } else if (typeof insurances === 'string') {
+          if (insurances !== filters.insurance) return false;
+        }
+      }
+
+      // ۶. فیلتر تجربه کاری
+      if (filters.experience) {
+        const expYears = (doctor as any).experienceYears || (doctor as any).experience || 0;
+        const numericExp = typeof expYears === 'string' ? parseInt(expYears) : expYears;
+        
+        if (filters.experience === '۵ سال به بالا' && numericExp < 5) return false;
+        if (filters.experience === '۱۰ سال به بالا' && numericExp < 10) return false;
+        if (filters.experience === '۱۵ سال به بالا' && numericExp < 15) return false;
+        if (filters.experience === '۲۰ سال به بالا' && numericExp < 20) return false;
+      }
+
+      // ۷. وضعیت‌های آنلاین و حضوری
       if (filters.isOnline && !('isOnline' in doctor ? (doctor as any).isOnline : false)) return false;
       if (filters.canInPerson && !('canInPerson' in doctor ? (doctor as any).canInPerson : false)) return false;
       if (filters.hasEmptySlot && doctor.firstAvailable === 'بدون نوبت آزاد') return false;
@@ -67,16 +105,20 @@ const DoctorList = ({ currentPage, onPageChange, filters }: DoctorListProps) => 
     });
   }, [filters]);
 
-  // مرتب‌سازی
+  // مرتب‌سازی لیست خروجی
   const sortedDoctors = useMemo(() => {
     const sorted = [...filteredDoctors].sort((a, b) => {
       if (activeSort === 'mostBookings') {
         return (b.reviewCount || 0) - (a.reviewCount || 0);
       } else if (activeSort === 'mostPopular') {
         return (b.rating || 0) - (a.rating || 0);
-      } else {
+      } else if (activeSort === 'nearestAvailable') {
+        // مرتب‌سازی فرضی بر اساس فیلد اولین نوبت در دسترس (پزشکان بدون نوبت آخر لیست می‌روند)
+        if (a.firstAvailable === 'بدون نوبت آزاد') return 1;
+        if (b.firstAvailable === 'بدون نوبت آزاد') return -1;
         return 0;
       }
+      return 0;
     });
     return sorted;
   }, [filteredDoctors, activeSort]);
@@ -122,7 +164,6 @@ const DoctorList = ({ currentPage, onPageChange, filters }: DoctorListProps) => 
       <div className="flex flex-col gap-6">
         {currentDoctors.length > 0 ? (
           currentDoctors.map((doctor: DoctorDetail) => {
-            // 👈 رفع خطای سیستم: استفاده مستقیم از id پروژه بدون ارجاع به فیلد ناموجود _id
             const doctorId = doctor.id;
             
             return (
