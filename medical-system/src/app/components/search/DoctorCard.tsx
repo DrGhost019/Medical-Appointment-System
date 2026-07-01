@@ -50,14 +50,14 @@ export default function DoctorCard({
   };
 
   return (
-    <div className="w-[289px] h-[363px] rounded-[10px] border border-[#E7E7E7] bg-white pb-4 flex flex-col hover:shadow-lg transition-shadow">
+    <div className="w-[320px] h-[420px] rounded-[10px] border border-[#E7E7E7] bg-white pb-4 flex flex-col hover:shadow-lg transition-shadow">
 
       {/* تصویر پزشک */}
       <div
         onClick={handleProfileClick}
         className="cursor-pointer"
       >
-        <div className="w-[289px] h-[200px] rounded-t-[10px] overflow-hidden bg-gray-100">
+        <div className="w-full h-[220px] rounded-t-[10px] overflow-hidden bg-gray-100">
           <img
             src={imageSrc}
             alt={name}
@@ -103,12 +103,13 @@ export default function DoctorCard({
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 mt-auto">
+        {/* ✅ دکمه‌ها - کنار هم (نه زیر هم) */}
+        <div className="flex flex-row gap-2 mt-auto">
 
           <button
             type="button"
             onClick={handleBookingClick}
-            className="w-full h-10 rounded-lg border-2 border-[#4179F0] text-[#4179F0] hover:bg-blue-50"
+            className="flex-1 h-10 rounded-lg border-2 border-[#4179F0] text-[#4179F0] hover:bg-blue-50 font-vazirmatn font-medium text-sm"
           >
             رزرو نوبت
           </button>
@@ -116,7 +117,7 @@ export default function DoctorCard({
           <button
             type="button"
             onClick={handleProfileClick}
-            className="w-full h-10 rounded-lg border border-[#E7E7E7] hover:bg-gray-50"
+            className="flex-1 h-10 rounded-lg border border-[#E7E7E7] hover:bg-gray-50 font-vazirmatn font-medium text-sm"
           >
             مشاهده پروفایل
           </button>

@@ -1,11 +1,8 @@
 // src/components/doctor/BookingCalendar.tsx
 "use client";
-
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useBookingStore } from '../../store/bookingStore';
-
 
 const toPersianNumber = (value: number | string | undefined | null): string => {
   if (value === undefined || value === null) return '';
@@ -13,14 +10,12 @@ const toPersianNumber = (value: number | string | undefined | null): string => {
   return value.toString().replace(/\d/g, (digit) => persianDigits[parseInt(digit)]);
 };
 
-// ✅ تعریف تایپ TimeSlot
 interface TimeSlot {
   _id: string;
   time: string;
   isReserved: boolean;
 }
 
-// ✅ تعریف تایپ Doctor
 interface Doctor {
   _id: string;
   name: string;
@@ -35,10 +30,6 @@ interface BookingCalendarProps {
 }
 
 export default function BookingCalendar({ doctor }: BookingCalendarProps) {
-  console.log('🔥 BookingCalendar is rendering!');
-console.log('🔥 Doctor in Calendar:', doctor);
-console.log('🔥 Doctor ID:', doctor?._id);
-
   const [selectedDate, setSelectedDate] = useState<number>(15);
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [slots, setSlots] = useState<TimeSlot[]>([]);
@@ -48,66 +39,45 @@ console.log('🔥 Doctor ID:', doctor?._id);
   const setSelectedDateStore = useBookingStore((state) => state.setSelectedDate);
   const setSelectedSlotStore = useBookingStore((state) => state.setSelectedSlot);
 
-  // دریافت اسلات‌های آزاد از دیتابیس
   useEffect(() => {
-    // src/app/components/doctor/BookingCalendar.tsx
-// جایگزین fetchSlots کن:
+    const fetchSlots = async () => {
+      if (!doctor?._id) return;
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/doctors/${doctor._id}/slots`);
+        const data = await response.json();
 
-const fetchSlots = async () => {
-  if (!doctor?._id) return;
-  
-  setIsLoading(true);
-  try {
-    console.log('📡 Fetching slots for doctor:', doctor._id);
-    const response = await fetch(`/api/doctors/${doctor._id}/slots`);
-    console.log('📡 Response status:', response.status);
-    
-    const data = await response.json();
-    console.log('📦 Full API response:', data);
-    
-    if (data.success && data.slots) {
-      console.log('📦 Slots from API:', data.slots);
-      console.log('📦 Slots count:', data.slots.length);
-      
-      const formattedSlotsData: TimeSlot[] = data.slots.map((slot: any) => ({
-        _id: slot._id.toString(),
-        time: slot.time,
-        isReserved: slot.isReserved,
-      }));
-      
-      console.log('✅ Formatted slots:', formattedSlotsData);
-      setSlots(formattedSlotsData);
-
-      const displaySlots = slots.slice(0, 6);  // ← فقط ۶ تا اول
-      
-      const firstAvailable = formattedSlotsData.find((slot: TimeSlot) => !slot.isReserved);
-      setSelectedSlot(firstAvailable || null);
-    } else {
-      console.warn('⚠️ No slots in response or success false:', data);
-    }
-  } catch (error) {
-    console.error('❌ Error fetching slots:', error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+        if (data.success && data.slots) {
+          const formattedSlotsData: TimeSlot[] = data.slots.map((slot: any) => ({
+            _id: slot._id.toString(),
+            time: slot.time,
+            isReserved: slot.isReserved,
+          }));
+          
+          setSlots(formattedSlotsData);
+          const firstAvailable = formattedSlotsData.find((slot: TimeSlot) => !slot.isReserved);
+          setSelectedSlot(firstAvailable || null);
+        }
+      } catch (error) {
+        console.error(' Error fetching slots:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     fetchSlots();
   }, [doctor?._id]);
 
-  // ذخیره اطلاعات در استور
   useEffect(() => {
     if (!doctor?._id) return;
-
     setSelectedDoctorStore({
       _id: doctor._id,
       name: doctor.name,
       specialty: doctor.specialty,
       avatar: doctor.avatar || doctor.image,
     });
-    
+
     setSelectedDateStore(`۱۴۰۳/۱۰/${selectedDate}`);
-    
+
     if (selectedSlot) {
       setSelectedSlotStore({
         _id: selectedSlot._id,
@@ -131,20 +101,15 @@ const fetchSlots = async () => {
     );
   }
 
-  // src/app/components/doctor/BookingCalendar.tsx
-// قبل از return:
-console.log('Doctor in BookingCalendar:', doctor);
-console.log('Doctor ID:', doctor?._id);
   return (
     <div className="w-[392px] rounded-xl border border-[#E7E7E7] bg-white p-4 flex flex-col gap-2" style={{ height: '571px' }} dir="rtl">
-      
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="font-vazirmatn font-bold text-base text-[#2E2E2E]">
           تقویم رزرو
         </h3>
         <span className="font-vazirmatn font-normal text-sm text-[#666666]">
-          {toPersianNumber(selectedDate)} دی ماه ۱۴۰۳
+          {toPersianNumber(selectedDate)} دی ماه ۱۴۳
         </span>
       </div>
 
@@ -224,17 +189,6 @@ console.log('Doctor ID:', doctor?._id);
           );
         })}
       </div>
-
-      {/* Book Button */}
-      {/*<Link href={doctor?._id ? `/doctors/${doctor._id}/booking` : '#'} className="mt-auto w-full">
-        <button
-          type="button"
-          disabled={!selectedSlot || !doctor?._id}
-          className="w-full h-11 rounded-lg bg-[#4179F0] text-white font-vazirmatn font-medium text-sm hover:bg-[#3565d0] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-        >
-          رزرو نوبت
-        </button>
-      </Link>*/}
     </div>
   );
 }

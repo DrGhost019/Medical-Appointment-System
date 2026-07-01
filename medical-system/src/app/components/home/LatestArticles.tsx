@@ -4,12 +4,10 @@ import { ChevronLeft } from 'lucide-react';
 import ArticleCard from './ArticleCard';
 import connectDB from '../../lib/db';
 import Article from '../../models/Article';
-
 export const dynamic = 'force-dynamic';
 
 export default async function LatestArticles() {
   await connectDB();
-  
   const articlesFromDB = await Article.find({})
     .sort({ date: -1, createdAt: -1 })
     .limit(3)
@@ -43,18 +41,28 @@ export default async function LatestArticles() {
   return (
     <section className="w-full bg-white py-6">
       <div className="max-w-[1440px] mx-auto">
-        <div className="w-[1216px] mx-auto flex flex-col gap-[18px]">
-          
-          <div className="w-full h-[40px] flex items-center justify-between pr-2">
+        <div 
+          className="mx-auto flex flex-col"
+          style={{
+            width: '1216px',
+            gap: '18px',
+          }}
+        >
+          {/* عنوان و دکمه مشاهده همه */}
+          <div 
+            className="w-full h-[40px] flex items-center justify-between"
+            style={{ paddingRight: '2px' }}
+          >
             <h2 className="font-vazirmatn font-medium text-[24px] leading-[100%] text-[#2E2E2E]">
               آخرین مقالات
             </h2>
-            <button className="flex items-center gap-1 text-[#666666] font-vazirmatn font-normal text-sm hover:text-primary-500 transition-colors">
+            <button className="flex items-center gap-1 text-[#666666] font-vazirmatn font-normal text-sm hover:text-[#4179F0] transition-colors">
               مشاهده همه
               <ChevronLeft size={16} />
             </button>
           </div>
 
+          {/* کارت‌های مقاله */}
           <div className="w-full flex items-center gap-4">
             {articles.map((article: any) => (
               <ArticleCard
@@ -66,7 +74,6 @@ export default async function LatestArticles() {
               />
             ))}
           </div>
-
         </div>
       </div>
     </section>

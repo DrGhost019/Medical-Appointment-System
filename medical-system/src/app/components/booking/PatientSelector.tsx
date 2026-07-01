@@ -53,8 +53,15 @@ export default function PatientSelector() {
   }, [selectedPatient, patients, setPatientInfoStore]);
 
   return (
-    <div className="w-[805px] rounded-xl border border-[#E7E7E7] bg-white p-4 flex flex-col gap-4" dir="rtl">
-      
+    <div 
+      className="rounded-xl border border-[#E7E7E7] bg-white flex flex-col"
+      style={{
+        width: '805px',
+        padding: '20px',
+        gap: '16px',
+      }}
+      dir="rtl"
+    >
       {/* عنوان و زیرعنوان */}
       <div className="flex flex-col gap-1 text-right">
         <h3 className="font-vazirmatn font-bold text-base text-[#2E2E2E]">

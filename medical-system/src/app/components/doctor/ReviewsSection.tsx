@@ -1,12 +1,11 @@
 // src/components/doctor/ReviewsSection.tsx
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ThumbsUp, MessageSquare, ChevronDown } from 'lucide-react';
 
 const toPersianNumber = (value: number | string | undefined): string => {
-  if (value === undefined || value === null) return '۰';
+  if (value === undefined || value === null) return '';
   const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
   return value.toString().replace(/\d/g, (digit) => persianDigits[parseInt(digit)]);
 };
@@ -40,11 +39,9 @@ export default function ReviewsSection({
   const [allReviews, setAllReviews] = useState<ReviewItem[]>(reviews);
   const [isLoading, setIsLoading] = useState(false);
 
-  // دریافت نظرات از دیتابیس
   useEffect(() => {
     const fetchReviews = async () => {
       if (!doctorId) return;
-      
       setIsLoading(true);
       try {
         const response = await fetch(`/api/doctors/${doctorId}/reviews`);
@@ -55,7 +52,6 @@ export default function ReviewsSection({
         }
       } catch (error) {
         console.error('Error fetching reviews:', error);
-        // استفاده از دیتای ورودی در صورت خطا
         if (reviews.length > 0) {
           setAllReviews(reviews);
         }
@@ -82,7 +78,6 @@ export default function ReviewsSection({
 
   return (
     <div className="w-[804px] rounded-[10px] border border-[#E7E7E7] bg-white p-6 flex flex-col gap-6" dir="rtl">
-      
       {/* عنوان */}
       <h3 className="font-vazirmatn font-bold text-base text-[#2E2E2E] text-right">
         نظرات کاربران
@@ -142,7 +137,7 @@ export default function ReviewsSection({
           displayedReviews.map((review, idx) => {
             const reviewId = review._id || review.id || `rev_${idx}`;
             const userAvatar = review.userImage || '/assets/logo.png';
-            const reviewDate = review.date || 'اخیر';
+            const reviewDate = review.date || 'اخیراً';
 
             return (
               <div key={reviewId} className="flex flex-col gap-3 border-b border-[#E7E7E7] pb-6 last:border-b-0 last:pb-0">

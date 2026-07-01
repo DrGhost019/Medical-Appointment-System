@@ -15,10 +15,16 @@ const toPersianNumber = (num: number): string => {
 
 const SpecialtyCard = ({ iconSrc, name, doctorCount }: SpecialtyCardProps) => {
   return (
-    <div className="w-[162px] h-[165px] rounded-[10px] border border-[#E7E7E7] bg-white p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:shadow-md hover:border-primary-500 transition-all">
+    <div 
+      className="rounded-[10px] border border-[#E7E7E7] bg-white p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:shadow-md hover:border-[#4179F0] transition-all"
+      style={{
+        width: '162px',
+        height: '165px',
+      }}
+    >
       <div className="w-14 h-14 flex items-center justify-center">
-        <img 
-          src={iconSrc} 
+        <img
+          src={iconSrc}
           alt={name}
           className="w-full h-full object-contain"
         />

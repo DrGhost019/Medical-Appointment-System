@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "seed": "dotenv -e .env.local -- tsx scripts/seed.ts",
+    "cleanup": "dotenv -e .env.local -- tsx scripts/cleanup.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -10,6 +12,7 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.21.0",
     "mongoose": "^9.7.1",
@@ -25,9 +28,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }

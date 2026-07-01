@@ -1,6 +1,5 @@
 // src/app/components/home/ArticleCard.tsx
-"use client"; // ✅ اضافه کردن این خط در بالای فایل
-
+"use client";
 import React from 'react';
 
 interface ArticleCardProps {
@@ -12,8 +11,13 @@ interface ArticleCardProps {
 
 export default function ArticleCard({ imageSrc, title, excerpt, date }: ArticleCardProps) {
   return (
-    <div className="flex-1 h-[375px] rounded-[10px] border border-[#E7E7E7] bg-white overflow-hidden flex flex-col cursor-pointer hover:shadow-lg transition-shadow">
-      
+    <div 
+      className="flex-1 rounded-[10px] border border-[#E7E7E7] bg-white overflow-hidden flex flex-col cursor-pointer hover:shadow-lg transition-shadow flex-shrink-0"
+      style={{
+        width: '394px',
+        height: '375px',
+      }}
+    >
       {/* Article Image */}
       <div className="w-full h-[200px] overflow-hidden">
         <img
@@ -45,7 +49,6 @@ export default function ArticleCard({ imageSrc, title, excerpt, date }: ArticleC
             ادامه مطلب
           </button>
         </div>
-
       </div>
     </div>
   );

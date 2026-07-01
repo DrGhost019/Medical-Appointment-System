@@ -54,18 +54,24 @@ const SpecialtiesList = () => {
       <div className="max-w-[1440px] mx-auto flex flex-col items-center gap-[18px]">
         
         {/* Header: Title + View All Button */}
-        <div className="w-[1212px] h-[40px] flex items-center justify-between gap-2 pr-2">
+        <div 
+          className="h-[40px] flex items-center justify-between gap-2"
+          style={{ width: '1216px' }}
+        >
           <h2 className="font-vazirmatn font-medium text-[24px] leading-[100%] text-[#000000]">
             لیست تخصص‌ها
           </h2>
-         <button className="flex items-center gap-1 text-[#666666] font-vazirmatn font-normal text-sm hover:text-primary-500 transition-colors">
-             مشاهده همه
+          <button className="flex items-center gap-1 text-[#666666] font-vazirmatn font-normal text-sm hover:text-[#4179F0] transition-colors">
+            مشاهده همه
             <ChevronLeft size={16} />
-         </button>
+          </button>
         </div>
 
         {/* Specialties Cards */}
-        <div className="w-[1216px] h-[165px] flex items-center justify-between">
+        <div 
+          className="h-[165px] flex items-center justify-between"
+          style={{ width: '1216px' }}
+        >
           {specialties.map((specialty) => (
             <SpecialtyCard
               key={specialty.id}

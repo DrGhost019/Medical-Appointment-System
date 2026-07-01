@@ -1,9 +1,7 @@
 "use client";
-
 import React, { useState } from 'react';
 import { Check, MapPin, Clock, ChevronDown } from 'lucide-react';
 
-// توابع داخلی برای تبدیل و بومی‌سازی فرمت نمایش اعداد
 const toPersianNumber = (value: number | string | undefined): string => {
   if (value === undefined || value === null) return '۰';
   const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -16,7 +14,6 @@ const toPersianRating = (value: number | undefined): string => {
   return toPersianNumber(rating);
 };
 
-// قالب‌بندی اینترفیس مطابق با خروجی‌های واقعی دیتابیس مدل داکتر
 interface DoctorInfoProps {
   doctor: {
     _id: string;
@@ -35,11 +32,7 @@ interface DoctorInfoProps {
 
 const DoctorInfo = ({ doctor }: DoctorInfoProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
-  // انتخاب تصویر پزشک به صورت پویا و ست کردن یک تصویر آواتار پیش‌فرض در صورت نبود آن
   const doctorImage = doctor.avatar || doctor.image || '/assets/logo.png';
-  
-  // دیتای پشتیبان در صورت ثبت نشدن جزییات در دیتابیس
   const rating = doctor.rating ?? 5;
   const reviewCount = doctor.reviewCount ?? 0;
   const medicalCode = doctor.medicalCode || 'ثبت نشده';
@@ -49,7 +42,6 @@ const DoctorInfo = ({ doctor }: DoctorInfoProps) => {
 
   return (
     <div className="w-[804px] rounded-[10px] border border-[#E7E7E7] overflow-hidden" dir="rtl">
-      
       {/* بخش نمایه دکتر */}
       <div 
         className="w-full bg-white border-b border-[#E7E7E7]"
@@ -68,7 +60,6 @@ const DoctorInfo = ({ doctor }: DoctorInfoProps) => {
               alt={doctor.name}
               className="w-full h-full object-cover"
               onError={(e) => {
-                // اگر عکس لود نشد، آواتار پیش‌فرض جایگزین شود
                 (e.target as HTMLImageElement).src = '/assets/logo.png';
               }}
             />
@@ -152,7 +143,7 @@ const DoctorInfo = ({ doctor }: DoctorInfoProps) => {
         </div>
       </div>
 
-      {/* دکمه فلش جهت باز و بسته کردن متن درباره داکتر */}
+      {/* دکمه فلش */}
       <div className="w-full flex justify-center pb-4 bg-white">
         <button
           type="button"
@@ -167,7 +158,6 @@ const DoctorInfo = ({ doctor }: DoctorInfoProps) => {
           />
         </button>
       </div>
-
     </div>
   );
 };
