@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import connectDB from '../../../../lib/db';
 import Slot from '../../../../models/Slot';
-import mongoose from 'mongoose';
 
 export async function GET(
   request: Request,
@@ -14,32 +13,32 @@ export async function GET(
     const url = new URL(request.url);
     const date = url.searchParams.get('date');
 
-    // اعتبارسنجی ID
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { message: 'شناسه پزشک نامعتبر است' },
-        { status: 400 }
-      );
-    }
+    // ✅ گرفتن همه اسلات‌ها از دیتابیس (بدون فیلتر)
+    const allSlots = await Slot.find({}).lean();
 
-    // ساخت فیلتر
-    let filter: any = {
-      doctorId: id,
-      isReserved: false, // فقط نوبت‌های آزاد
-    };
+    // ✅ فیلتر کردن در جاوااسکریپت (نه مونگو)
+    let filteredSlots = allSlots.filter((slot: any) => {
+      // ۱. doctorId رو با id مقایسه کن (هر دو string)
+      const slotDoctorId = slot.doctorId.toString();
+      if (slotDoctorId !== id) return false;
 
-    // فیلتر بر اساس تاریخ (اختیاری)
-    if (date) {
-      filter.date = date;
-    }
+      // ۲. فقط اسلات‌های آزاد (isReserved: false)
+      if (slot.isReserved === true) return false;
 
-    // دریافت اسلات‌ها
-    const slots = await Slot.find(filter)
-      .sort({ date: 1, time: 1 })
-      .lean();
+      // ۳. اگه تاریخ داده شده، فقط همون روز رو نشون بده
+      if (date && slot.date !== date) return false;
 
-    // تبدیل به فرمت مناسب
-    const formattedSlots = slots.map((slot: any) => ({
+      return true;
+    });
+
+    // مرتب‌سازی بر اساس تاریخ و ساعت
+    filteredSlots.sort((a: any, b: any) => {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      return a.time.localeCompare(b.time);
+    });
+
+    // تبدیل به فرمت خروجی
+    const formattedSlots = filteredSlots.map((slot: any) => ({
       _id: slot._id.toString(),
       doctorId: slot.doctorId.toString(),
       date: slot.date,
@@ -54,9 +53,9 @@ export async function GET(
     });
 
   } catch (error: any) {
-    console.error('❌ خطا در دریافت اسلات‌های پزشک:', error);
+    console.error('❌ Error in slots API:', error);
     return NextResponse.json(
-      { message: 'خطایی در سرور رخ داده است.', error: error.message },
+      { message: 'خطای سرور', error: error.message },
       { status: 500 }
     );
   }

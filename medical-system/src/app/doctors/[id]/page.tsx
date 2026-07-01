@@ -2,14 +2,11 @@
 import { notFound } from 'next/navigation';
 import connectDB from '../../lib/db';
 import Doctor from '../../models/Doctor';
-import Slot from '../../models/Slot';
 import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
 import DoctorInfo from '../../components/doctor/DoctorInfo';
 import ContactMethods from '../../components/doctor/ContactMethods';
-import BookingCalendar from '../../components/doctor/BookingCalendar';
 import ReviewsSection from '../../components/doctor/ReviewsSection';
-import mongoose from 'mongoose';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -17,15 +14,12 @@ type Props = {
 
 export default async function DoctorDetailPage({ params }: Props) {
   const { id } = await params;
-  
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    notFound();
-  }
 
   await connectDB();
 
-  const doctor = await Doctor.findById(id).lean();
-  
+  const doctors = await Doctor.find().lean();
+  const doctor = doctors.find((d: any) => d._id.toString() === id);
+
   if (!doctor) {
     notFound();
   }
@@ -36,7 +30,6 @@ export default async function DoctorDetailPage({ params }: Props) {
     id: doctor._id.toString(),
     image: doctor.image || doctor.avatar || '/assets/logo.png',
     avatar: doctor.avatar || doctor.image || '/assets/logo.png',
-    availableTimes: [],
   };
 
   return (
@@ -52,9 +45,7 @@ export default async function DoctorDetailPage({ params }: Props) {
             <div className="flex-1">
               <ContactMethods doctor={doctorData} />
             </div>
-            <div className="lg:w-[392px]">
-              <BookingCalendar doctor={doctorData} />
-            </div>
+            {/* ❌ تقویم رو حذف کردیم */}
           </div>
           
           <ReviewsSection 

@@ -13,7 +13,7 @@ interface PaymentGatewayProps {
 
 export default function PaymentGateway({ doctorId }: PaymentGatewayProps) {
   const router = useRouter();
-  const { token } = useAuthStore();
+  const { token, isAuthenticated } = useAuthStore(); // ✅ اضافه کردن isAuthenticated
   const { selectedDate, selectedSlot, patientInfo } = useBookingStore();
   
   const [selectedBank, setSelectedBank] = useState<'saman' | 'parsian'>('saman');
@@ -35,6 +35,15 @@ export default function PaymentGateway({ doctorId }: PaymentGatewayProps) {
   ];
 
   const handlePayment = async (isSuccess: boolean) => {
+    // ✅ چک کردن احراز هویت
+    if (!isAuthenticated()) {
+      setError('برای پرداخت ابتدا باید وارد حساب خود شوید.');
+      setTimeout(() => {
+        router.push('/auth/login');
+      }, 1500);
+      return;
+    }
+
     // اگر پرداخت ناموفق باشه، مستقیم به صفحه خطا می‌ره
     if (!isSuccess) {
       router.push(`/doctors/${doctorId}/success?success=false`);
@@ -173,7 +182,11 @@ export default function PaymentGateway({ doctorId }: PaymentGatewayProps) {
 
         {/* نمایش خطا */}
         {error && (
-          <div className="text-red-500 text-xs font-vazirmatn text-right">
+          <div className={`text-xs font-vazirmatn text-right p-2 rounded-lg ${
+            error.includes('وارد حساب') 
+              ? 'text-[#4179F0] bg-blue-50 border border-blue-200' 
+              : 'text-red-500 bg-red-50 border border-red-200'
+          }`}>
             {error}
           </div>
         )}

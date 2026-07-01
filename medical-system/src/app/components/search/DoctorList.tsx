@@ -200,7 +200,7 @@ export default function DoctorList({ currentPage, onPageChange, filters }: Docto
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-end gap-3 mt-2 pt-2">
-                  <Link href={`/doctors/${doctorId}`} className="w-full sm:w-auto sm:flex-1 sm:max-w-[200px]">
+                  <Link href={`/doctors/${doctorId}/booking`} className="w-full sm:w-auto sm:flex-1 sm:max-w-[200px]">
                     <button type="button" className="w-full h-10 rounded-lg bg-[#4179F0] text-white font-vazirmatn font-medium text-sm hover:bg-[#3565d0] transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
                       رزرو نوبت
                       <ChevronLeft size={16} className="mt-0.5" />

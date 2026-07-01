@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useBookingStore } from '../../store/bookingStore';
 
+
 const toPersianNumber = (value: number | string | undefined | null): string => {
   if (value === undefined || value === null) return '';
   const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -34,6 +35,10 @@ interface BookingCalendarProps {
 }
 
 export default function BookingCalendar({ doctor }: BookingCalendarProps) {
+  console.log('🔥 BookingCalendar is rendering!');
+console.log('🔥 Doctor in Calendar:', doctor);
+console.log('🔥 Doctor ID:', doctor?._id);
+
   const [selectedDate, setSelectedDate] = useState<number>(15);
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [slots, setSlots] = useState<TimeSlot[]>([]);
@@ -45,43 +50,47 @@ export default function BookingCalendar({ doctor }: BookingCalendarProps) {
 
   // دریافت اسلات‌های آزاد از دیتابیس
   useEffect(() => {
-    const fetchSlots = async () => {
-      if (!doctor?._id) return;
+    // src/app/components/doctor/BookingCalendar.tsx
+// جایگزین fetchSlots کن:
+
+const fetchSlots = async () => {
+  if (!doctor?._id) return;
+  
+  setIsLoading(true);
+  try {
+    console.log('📡 Fetching slots for doctor:', doctor._id);
+    const response = await fetch(`/api/doctors/${doctor._id}/slots`);
+    console.log('📡 Response status:', response.status);
+    
+    const data = await response.json();
+    console.log('📦 Full API response:', data);
+    
+    if (data.success && data.slots) {
+      console.log('📦 Slots from API:', data.slots);
+      console.log('📦 Slots count:', data.slots.length);
       
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/doctors/${doctor._id}/slots`);
-        const data = await response.json();
-        
-        if (data.success && data.slots) {
-          // ✅ تبدیل با تایپ صحیح
-          const formattedSlots: TimeSlot[] = data.slots.map((slot: any) => ({
-            _id: slot._id.toString(),
-            time: slot.time,
-            isReserved: slot.isReserved,
-          }));
-          setSlots(formattedSlots);
-          
-          // انتخاب اولین اسلات خالی
-          const firstAvailable = formattedSlots.find((slot: TimeSlot) => !slot.isReserved);
-          setSelectedSlot(firstAvailable || null);
-        }
-      } catch (error) {
-        console.error('Error fetching slots:', error);
-        // استفاده از دیتای پیش‌فرض در صورت خطا
-        const defaultSlots: TimeSlot[] = [
-          { _id: '1', time: '۱۰:۱۵', isReserved: false },
-          { _id: '2', time: '۱۱:۰۰', isReserved: false },
-          { _id: '3', time: '۱۴:۳۳', isReserved: false },
-          { _id: '4', time: '۱۶:۱۵', isReserved: false },
-          { _id: '5', time: '۱۸:۰۰', isReserved: false },
-        ];
-        setSlots(defaultSlots);
-        setSelectedSlot(defaultSlots[0]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      const formattedSlotsData: TimeSlot[] = data.slots.map((slot: any) => ({
+        _id: slot._id.toString(),
+        time: slot.time,
+        isReserved: slot.isReserved,
+      }));
+      
+      console.log('✅ Formatted slots:', formattedSlotsData);
+      setSlots(formattedSlotsData);
+
+      const displaySlots = slots.slice(0, 6);  // ← فقط ۶ تا اول
+      
+      const firstAvailable = formattedSlotsData.find((slot: TimeSlot) => !slot.isReserved);
+      setSelectedSlot(firstAvailable || null);
+    } else {
+      console.warn('⚠️ No slots in response or success false:', data);
+    }
+  } catch (error) {
+    console.error('❌ Error fetching slots:', error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
     fetchSlots();
   }, [doctor?._id]);
@@ -191,7 +200,7 @@ console.log('Doctor ID:', doctor?._id);
       <div className="font-vazirmatn font-medium text-xs text-[#2E2E2E] mt-3 text-right">
         ساعت‌های در دسترس:
       </div>
-      <div className="grid grid-cols-3 gap-2 mt-1">
+      <div className="grid grid-cols-3 gap-2 mt-1 max-h-[120px] overflow-y-auto">
         {slots.map((slot: TimeSlot, index: number) => {
           const isSelected = selectedSlot?._id === slot?._id;
           const uniqueKey = slot._id || `slot-${slot.time}-${index}`;
@@ -202,7 +211,7 @@ console.log('Doctor ID:', doctor?._id);
               type="button"
               disabled={slot.isReserved}
               onClick={() => setSelectedSlot(slot)}
-              className={`h-9 rounded-lg font-vazirmatn font-normal text-xs transition-all ${
+              className={`h-7 rounded-lg font-vazirmatn font-normal text-xs transition-all ${
                 slot.isReserved
                   ? 'bg-[#F5F5F5] text-[#A0A0A0] border border-[#E0E0E0] line-through cursor-not-allowed'
                   : isSelected
@@ -217,7 +226,7 @@ console.log('Doctor ID:', doctor?._id);
       </div>
 
       {/* Book Button */}
-      <Link href={doctor?._id ? `/doctors/${doctor._id}/booking` : '#'} className="mt-auto w-full">
+      {/*<Link href={doctor?._id ? `/doctors/${doctor._id}/booking` : '#'} className="mt-auto w-full">
         <button
           type="button"
           disabled={!selectedSlot || !doctor?._id}
@@ -225,7 +234,7 @@ console.log('Doctor ID:', doctor?._id);
         >
           رزرو نوبت
         </button>
-      </Link>
+      </Link>*/}
     </div>
   );
 }

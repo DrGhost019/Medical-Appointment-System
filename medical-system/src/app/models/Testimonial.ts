@@ -2,66 +2,52 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface ITestimonial extends Document {
+  doctorId: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   userName: string;
-  userImage?: string;
-  avatar?: string;
   rating: number;
-  date: string;
   comment: string;
-  doctorName: string;
-  doctorId?: mongoose.Types.ObjectId;
-  userId?: mongoose.Types.ObjectId;
-  createdAt?: Date;
-  updatedAt?: Date;
+  date: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const TestimonialSchema = new Schema<ITestimonial>(
   {
+    doctorId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Doctor',
+      required: true,
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     userName: {
       type: String,
-      required: [true, 'نام کاربر الزامی است'],
-      trim: true,
-    },
-    userImage: {
-      type: String,
-      default: '/assets/logo.png',
-    },
-    avatar: {
-      type: String,
-      default: '/assets/logo.png',
+      required: true,
     },
     rating: {
       type: Number,
-      required: [true, 'امتیاز الزامی است'],
+      required: true,
       min: 1,
       max: 5,
-      default: 5,
+    },
+    comment: {
+      type: String,
+      required: true,
     },
     date: {
       type: String,
       default: () => new Date().toLocaleDateString('fa-IR'),
     },
-    comment: {
-      type: String,
-      required: [true, 'متن نظر الزامی است'],
-    },
-    doctorName: {
-      type: String,
-      required: [true, 'نام پزشک الزامی است'],
-    },
-    doctorId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Doctor',
-    },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
+
+// ایندکس برای جستجوی سریع نظرات یک پزشک
+TestimonialSchema.index({ doctorId: 1, createdAt: -1 });
 
 const Testimonial: Model<ITestimonial> = mongoose.models.Testimonial || mongoose.model<ITestimonial>('Testimonial', TestimonialSchema);
 

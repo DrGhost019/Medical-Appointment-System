@@ -42,6 +42,14 @@ const SlotSchema: Schema<ISlot> = new Schema(
 // ایجاد Compound Index برای جلوگیری از تکراری بودن
 SlotSchema.index({ doctorId: 1, date: 1, time: 1 }, { unique: true });
 
-const Slot: Model<ISlot> = mongoose.models.Slot || mongoose.model<ISlot>('Slot', SlotSchema);
+//const Slot: Model<ISlot> = mongoose.models.Slot || mongoose.model<ISlot>('Slot', SlotSchema);
+
+const Slot =
+  mongoose.models.Slot ||
+  mongoose.model<ISlot>("Slot", SlotSchema);
+
+console.log("Collection:", Slot.collection.name);
 
 export default Slot;
+
+//export default Slot;
